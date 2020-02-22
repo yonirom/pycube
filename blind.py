@@ -41,7 +41,7 @@ colored.fore.YELLOW_1 '\x1b[38;5;226m'
 colored.style.RESET '\x1b[0m'
 
 """
-S = list(range(54))   # Initial cube
+I = list(range(54))   # Initial cube
 
 COLORS = ['\x1b[38;5;15m'] * 9 + ['\x1b[38;5;2m'] * 9 + ['\x1b[38;5;226m'] * 9 + ['\x1b[38;5;214m'] * 9 + ['\x1b[38;5;1m'] * 9 + ['\x1b[38;5;4m'] * 9
 
@@ -52,9 +52,9 @@ TRANSFORMS = {
         'D': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33, 34, 35, 24, 21, 18, 25, 22, 19, 26, 23, 20, 27, 28, 29, 30, 31, 32, 51, 52, 53, 36, 37, 38, 39, 40, 41, 15, 16, 17, 45, 46, 47, 48, 49, 50, 42, 43, 44],
         'F': [0, 1, 2, 3, 4, 5, 35, 32, 29, 15, 12, 9, 16, 13, 10, 17, 14, 11, 42, 39, 36, 21, 22, 23, 24, 25, 26, 27, 28, 18, 30, 31, 19, 33, 34, 20, 6, 37, 38, 7, 40, 41, 8, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53],
         'B': [38, 41, 44, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 27, 30, 33, 2, 28, 29, 1, 31, 32, 0, 34, 35, 36, 37, 26, 39, 40, 25, 42, 43, 24, 51, 48, 45, 52, 49, 46, 53, 50, 47],
-        'X': [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 45, 46, 47, 48, 49, 50, 51, 52, 53, 29, 32, 35, 28, 31, 34, 27, 30, 33, 42, 39, 36, 43, 40, 37, 44, 41, 38, 6, 7, 8, 3, 4, 5, 0, 1, 2],
+        'X': [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 53, 52, 51, 50, 49, 48, 47, 46, 45, 29, 32, 35, 28, 31, 34, 27, 30, 33, 42, 39, 36, 43, 40, 37, 44, 41, 38, 8, 7, 6, 5, 4, 3, 2, 1, 0],
         'Y': [6, 3, 0, 7, 4, 1, 8, 5, 2, 36, 37, 38, 39, 40, 41, 42, 43, 44, 20, 23, 26, 19, 22, 25, 18, 21, 24, 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52, 53, 27, 28, 29, 30, 31, 32, 33, 34, 35],
-        'Z': [27, 28, 29, 30, 31, 32, 33, 34, 35, 15, 12, 9, 16, 13, 10, 17, 14, 11, 36, 37, 38, 39, 40, 41, 42, 43, 44, 18, 21, 24, 19, 22, 25, 20, 23, 26, 6, 3, 0, 7, 4, 1, 8, 5, 2, 47, 50, 53, 46, 49, 52, 45, 48, 51],
+        'Z': [33, 30, 27, 34, 31, 28, 35, 32, 29, 15, 12, 9, 16, 13, 10, 17, 14, 11, 42, 39, 36, 43, 40, 37, 44, 41, 38, 18, 21, 24, 19, 22, 25, 20, 23, 26, 6, 3, 0, 7, 4, 1, 8, 5, 2, 51, 48, 45, 52, 49, 46, 53, 50, 47],
 }
 # U_ = [2, 4, 7, 1, 6, 0, 3, 5, 24, 25, 26, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 40, 41, 42, 27, 28, 29, 30, 31, 8, 9, 10, 35, 36, 37, 38, 39, 32, 33, 34, 43, 44, 45, 46, 47]
 # R_ = [0, 1, 45, 3, 43, 5, 6, 40, 8, 9, 2, 11, 4, 13, 14, 7, 16, 17, 10, 19, 12, 21, 22, 15, 24, 25, 26, 27, 28, 29, 30, 31, 34, 36, 39, 33, 38, 32, 35, 37, 23, 41, 42, 20, 44, 18, 46, 47]
@@ -78,27 +78,46 @@ X = partial(A, transform=TRANSFORMS['X'])
 Y = partial(A, transform=TRANSFORMS['Y'])
 Z = partial(A, transform=TRANSFORMS['Z'])
 
-U2 = partial(A, transform=U(U(S)))
-Ut = partial(A, transform=U(U(U(S))))
-R2 = partial(A, transform=R(R(S)))
-Rt = partial(A, transform=R(R(R(S))))
-L2 = partial(A, transform=L(L(S)))
-Lt = partial(A, transform=L(L(L(S))))
-D2 = partial(A, transform=D(D(S)))
-Dt = partial(A, transform=D(D(D(S))))
-F2 = partial(A, transform=F(F(S)))
-Ft = partial(A, transform=F(F(F(S))))
-B2 = partial(A, transform=B(B(S)))
-Bt = partial(A, transform=B(B(B(S))))
+U2 = partial(A, transform=U(U(I)))
+Ut = partial(A, transform=U(U(U(I))))
+R2 = partial(A, transform=R(R(I)))
+Rt = partial(A, transform=R(R(R(I))))
+L2 = partial(A, transform=L(L(I)))
+Lt = partial(A, transform=L(L(L(I))))
+D2 = partial(A, transform=D(D(I)))
+Dt = partial(A, transform=D(D(D(I))))
+F2 = partial(A, transform=F(F(I)))
+Ft = partial(A, transform=F(F(F(I))))
+B2 = partial(A, transform=B(B(I)))
+Bt = partial(A, transform=B(B(B(I))))
+Xt = partial(A, transform=X(X(X(I))))
+Yt = partial(A, transform=Y(Y(Y(I))))
+Zt = partial(A, transform=Z(Z(Z(I))))
+M  = partial(A, transform=(Xt(R(Lt(I)))))
+Mt = partial(A, transform=(M(M(M(I)))))
+E  = partial(A, transform=(U(Dt(Yt(I)))))
+Et = partial(A, transform=(E(E(E(I)))))
+S  = partial(A, transform=(Ft(B(Z(I)))))
+St  = partial(A, transform=(S(S(S(I)))))
 
-Tperm = partial(A, transform=(Ft(Rt(U(R(Ut(Rt(Ut(R2(F(Rt(Ut(Rt(U(R(S))))))))))))))))
-Yperm = partial(A, transform=(R(U(R2(U(Lt(U2(R(Ut(Rt(U2(R(L(Ut(R(Ut(Rt(S))))))))))))))))))
+r = partial(A, transform=(R(Mt(I))))
+rt = partial(A, transform=(Rt(M(I))))
+l = partial(A, transform=(L(M(I))))
+lt = partial(A, transform=(Lt(Mt(I))))
+f = partial(A, transform=(F(S(I))))
+ft = partial(A, transform=(Ft(St(I))))
+
+Tperm = partial(A, transform=(Ft(Rt(U(R(Ut(Rt(Ut(R2(F(Rt(Ut(Rt(U(R(I))))))))))))))))
+Yperm = partial(A, transform=(R(U(R2(U(Lt(U2(R(Ut(Rt(U2(R(L(Ut(R(Ut(Rt(I))))))))))))))))))
+
+JAperm = partial(A, transform=(Xt(U2(r(U(rt(U2(R(Ft(R(F(R2(X(I))))))))))))))
+
 
 
 
 def print_cube(c):
     def f(i):
-        return COLORS[i] + "\u2588\u2588"  # f'{i:2d}'
+        return COLORS[i] + "\u2588\u2588"  #f'{i:2d}'#
 
     print("      {}{}{}".format(f(c[0]), f(c[1]), f(c[2])))
     print("      {}{}{}".format(f(c[3]), f(c[4]), f(c[5])))
@@ -132,17 +151,17 @@ def gen_scramble() -> str:
 
 def run_scramble(cube: list, scramble: str) -> list:
     cube_state = cube
-    #for move in scramble.replace("'", "t").split():
+    # for move in scramble.replace("'", "t").split():
     #    cube_state = globals()[move](cube_state)
-    cube_state = Z(D2(U2(Z(L2(cube_state)))))
     return cube_state
 
 
 def main():
-    cube = S
+    cube = I
     scramble = gen_scramble()
     cube = run_scramble(cube, scramble)
     print_cube(cube)
+    print_cube(Xt(JAperm(X((cube)))))
     print("Scramble: " + scramble)
 
 
