@@ -44,7 +44,6 @@ colored.style.RESET '\x1b[0m'
 
 """
 
-COLORS = ['\x1b[38;5;15m'] * 9 + ['\x1b[38;5;2m'] * 9 + ['\x1b[38;5;226m'] * 9 + ['\x1b[38;5;214m'] * 9 + ['\x1b[38;5;1m'] * 9 + ['\x1b[38;5;4m'] * 9
 
 TRANSFORMS = {
         'U': [6, 3, 0, 7, 4, 1, 8, 5, 2, 36, 37, 38, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 9, 10, 11, 30, 31, 32, 33, 34, 35, 45, 46, 47, 39, 40, 41, 42, 43, 44, 27, 28, 29, 48, 49, 50, 51, 52, 53],
@@ -60,6 +59,8 @@ TRANSFORMS = {
 
 class Cube():
 
+    COLORS = ['\x1b[38;5;15m'] * 9 + ['\x1b[38;5;2m'] * 9 + ['\x1b[38;5;226m'] * 9 + ['\x1b[38;5;214m'] * 9 + ['\x1b[38;5;1m'] * 9 + ['\x1b[38;5;4m'] * 9
+
     def __init__(self, transform):
         if isinstance(transform, Cube):
             self.transform = transform.transform
@@ -69,14 +70,20 @@ class Cube():
     def _apply(self, transform):
         return Cube([self.transform[i] for i in transform])
 
-    def __mul__(self, other):
+    def __add__(self, other):
         return self._apply(other.transform)
 
-    def __pow__(self, exp):
+    def __mul__(self, exp):
         c = Cube(self.transform)
-        for i in range(exp - 1):
-            c = c * self
+        for i in range((exp % 4) -1):
+            c = c + self
         return c
+
+    def __neg__(self):
+        return self.__mul__(3)
+
+    def __sub__(self, other):
+        return self._apply((-other).transform)
 
     def __repr__(self):
         return str(self.transform)
@@ -84,9 +91,11 @@ class Cube():
     def __str__(self):
         c = self.transform
         def f(i):
-            return COLORS[i] + "\u2588\u2588"  #f'{i:2d}'#
+            return self.COLORS[i] + "\u2588\u2588"  #f'{i:2d}'#
 
-        return f"""      {f(c[0])}{f(c[1])}{f(c[2])}
+        return \
+f"""
+      {f(c[0])}{f(c[1])}{f(c[2])}
       {f(c[3])}{f(c[4])}{f(c[5])}
       {f(c[6])}{f(c[7])}{f(c[8])}
 {f(c[27])}{f(c[28])}{f(c[29])}{f(c[9])}{f(c[10])}{f(c[11])}{f(c[36])}{f(c[37])}{f(c[38])}{f(c[45])}{f(c[46])}{f(c[47])}
@@ -109,12 +118,14 @@ X = Cube(TRANSFORMS['X'])
 Y = Cube(TRANSFORMS['Y'])
 Z = Cube(TRANSFORMS['Z'])
 
-U2 = Cube(U ** 2)
-Ut = Cube(U ** 3)
-# Tperm = partial(A, transform=(Ft(Rt(U(R(Ut(Rt(Ut(R2(F(Rt(Ut(Rt(U(R(I))))))))))))))))
-print((I * R * U * (R ** 3) * (U ** 3) * (R ** 3) * F * (R ** 2) * (U ** 3) * (R ** 3) * (U ** 3) * R * U * ((R ** 3) * F ** 3)))
-print(I)
-print(Y ** 3)
+U2 = Cube(U * 2)
+Ut = Cube(U * 3)
+Lt = Cube(L * 3)
+Xt = Cube(X * 3)
+M = Cube(Lt + R + Xt)
+tPerm = Cube(R + U - R - U - R + F + R * 2 - U - R - U + R + U - R - F)
+print(-tPerm)
+print(M)
 
 sys.exit(0)
 
@@ -252,11 +263,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-#
-# for i in gen_scramble().split():
-#     cube = run_scramble(cube, i)
-#     print(i)
-#     print_cube(cube)
-#
-# print()
-# print_cube(L(U(S)))
