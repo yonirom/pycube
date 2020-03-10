@@ -79,6 +79,9 @@ class Cube():
         self.transform = transform
         self.revtransform = revtransform
 
+    def solved(self):
+        return self == I
+
     def _apply(self, cube):
         c = Cube()
         c.set_transforms([self.transform[i] for i in cube.transform], [cube.revtransform[i] for i in self.revtransform])
@@ -89,8 +92,13 @@ class Cube():
 
     def __mul__(self, exp):
         c = Cube(self)
-        for i in range(exp -1):
-            c = c + self
+        if exp == -1:
+            return -c
+        for i in range(abs(exp) - 1):
+            if exp > 0:
+                c = self + c
+            else:
+                c = self - c
         return c
 
     def __neg__(self):
@@ -100,6 +108,9 @@ class Cube():
 
     def __sub__(self, other):
         return self._apply(-other)
+
+    def __eq__(self, other):
+        return self.transform == other.transform
 
     def __repr__(self):
         return str(self.transform)
@@ -190,7 +201,7 @@ STR_2_CUBE = {
 
 SUNE = Cube(R + U - R + U + R + U*2 -R)
 print(Cube(BE['X'] + PLL['T'] - BE['X'] + BE['V'] + PLL['T'] - BE['V']))
-print(Cube(PLL['Y']))
+print(Cube(PLL['Y'] + PLL['Y'] + U).solved())
 
 def gen_scramble() -> str:
     DIRECTIONS = ["U", "R", "L", "D", "F", "B"]
