@@ -79,6 +79,9 @@ class Cube():
         self.transform = transform
         self.revtransform = revtransform
 
+    def _negate(self):
+        self.transform, self.revtransform = self.revtransform, self.transform
+
     def solved(self):
         return self == I
 
@@ -103,7 +106,7 @@ class Cube():
 
     def __neg__(self):
         c = Cube(self)
-        c.set_transforms(c.revtransform, c.transform)
+        c._negate()
         return c
 
     def __sub__(self, other):
@@ -167,9 +170,14 @@ d = Cube(E + D)
 #  Blind edges
 BE = {
         'A': Cube(-l * 2 + D + L * 2),
-        'X': Cube(L * 2),
+        'U': Cube(-D + L * 2),
         'V': Cube(D * 2 + L * 2),
+        'W': Cube(D + L * 2),
+        'X': Cube(L * 2),
 }
+
+def edge_swap(letter):
+    return Cube(BE[letter] + PLL['T'] - BE[letter])
 
 PLL = {
     'T': Cube(R + U - R - U - R + F + R * 2 - U - R - U + R + U - R - F),
@@ -200,8 +208,8 @@ STR_2_CUBE = {
 }
 
 SUNE = Cube(R + U - R + U + R + U*2 -R)
-print(Cube(BE['X'] + PLL['T'] - BE['X'] + BE['V'] + PLL['T'] - BE['V']))
-print(Cube(PLL['Y'] + PLL['Y'] + U).solved())
+print(edge_swap('U') + edge_swap('V') + edge_swap('W') + edge_swap('X'))
+print(Cube(PLL['Y'] - PLL['Y']).solved())
 
 def gen_scramble() -> str:
     DIRECTIONS = ["U", "R", "L", "D", "F", "B"]
