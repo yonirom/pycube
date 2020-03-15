@@ -184,7 +184,7 @@ BE = {
         'F': Cube(-d + L),
         'G': Cube(-L -d + L),
         'H': Cube(d - L),
-        'I': Cube(l - D + L * 2),
+        'I': Cube(l + D + L * 2),
         'J': Cube(d * 2 + L),
         'K': Cube(-D - L -d + L),
         'L': Cube(-L),
@@ -271,6 +271,7 @@ def main():
     I += X * 2 - Y
     cube = I
     scramble = gen_scramble()
+    # scramble = "D' F L F' U' F2 L R2 B' F U' B F D2 U2 R L2 B' F D"
     cube = run_scramble(cube, scramble)
     print(cube)
     print("Scramble: " + scramble)
@@ -278,6 +279,8 @@ def main():
     print(f'Len: {len(edges)}')
     for l in edges:
         cube += edge_swap(l)
+        print(l)
+        print(cube)
     print(cube)
 
 
