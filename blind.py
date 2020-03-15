@@ -118,22 +118,30 @@ class Cube():
     def __repr__(self):
         return str(self.transform)
 
+    # def print_target(self):
+    #     c = self.transform
+    #     def f(i):
+    #         return self.COLORS[i] + "\u2588\u2588"  #f'{i:2d}'#
+    #     print(f'{f(c[3])}\n{f(c[28])}\x1b[0m')
+
     def __str__(self):
         c = self.transform
         def f(i):
-            return self.COLORS[i] + "\u2588\u2588"  #f'{i:2d}'#
+            if c[i] == I.transform[i]:
+                return self.COLORS[c[i]] + "\u2592\u2592"  #f'{i:2d}'#
+            return self.COLORS[c[i]] + "\u2588\u2588"  #f'{i:2d}'#
 
         return \
 f"""
-      {f(c[0])}{f(c[1])}{f(c[2])}
-      {f(c[3])}{f(c[4])}{f(c[5])}
-      {f(c[6])}{f(c[7])}{f(c[8])}
-{f(c[27])}{f(c[28])}{f(c[29])}{f(c[9])}{f(c[10])}{f(c[11])}{f(c[36])}{f(c[37])}{f(c[38])}{f(c[45])}{f(c[46])}{f(c[47])}
-{f(c[30])}{f(c[31])}{f(c[32])}{f(c[12])}{f(c[13])}{f(c[14])}{f(c[39])}{f(c[40])}{f(c[41])}{f(c[48])}{f(c[49])}{f(c[50])}
-{f(c[33])}{f(c[34])}{f(c[35])}{f(c[15])}{f(c[16])}{f(c[17])}{f(c[42])}{f(c[43])}{f(c[44])}{f(c[51])}{f(c[52])}{f(c[53])}
-      {f(c[18])}{f(c[19])}{f(c[20])}
-      {f(c[21])}{f(c[22])}{f(c[23])}
-      {f(c[24])}{f(c[25])}{f(c[26])}
+      {f(0)}{f(1)}{f(2)}
+      {f(3)}{f(4)}{f(5)}
+      {f(6)}{f(7)}{f(8)}
+{f(27)}{f(28)}{f(29)}{f(9)}{f(10)}{f(11)}{f(36)}{f(37)}{f(38)}{f(45)}{f(46)}{f(47)}
+{f(30)}{f(31)}{f(32)}{f(12)}{f(13)}{f(14)}{f(39)}{f(40)}{f(41)}{f(48)}{f(49)}{f(50)}
+{f(33)}{f(34)}{f(35)}{f(15)}{f(16)}{f(17)}{f(42)}{f(43)}{f(44)}{f(51)}{f(52)}{f(53)}
+      {f(18)}{f(19)}{f(20)}
+      {f(21)}{f(22)}{f(23)}
+      {f(24)}{f(25)}{f(26)}
 \x1b[0m"""
 
 I = Cube()
@@ -169,7 +177,24 @@ d = Cube(E + D)
 
 #  Blind edges
 BE = {
-        'A': Cube(-l * 2 + D + L * 2),
+        'A': Cube(-l * 2 - D + L * 2),
+        'C': Cube(l - D - L - d + L),
+        'D': Cube(I),
+        'E': Cube(-L + d -L),
+        'F': Cube(-d + L),
+        'G': Cube(-L -d + L),
+        'H': Cube(d - L),
+        'I': Cube(l - D + L * 2),
+        'J': Cube(d * 2 + L),
+        'K': Cube(-D - L -d + L),
+        'L': Cube(-L),
+        'N': Cube(d + L),
+        'O': Cube(D * 2 - L - d + L),
+        'P': Cube(-d - L),
+        'Q': Cube(-l + D + L * 2),
+        'R': Cube(L),
+        'S': Cube(-l - D + L * 2),
+        'T': Cube(d * 2 - L),
         'U': Cube(-D + L * 2),
         'V': Cube(D * 2 + L * 2),
         'W': Cube(D + L * 2),
@@ -208,8 +233,14 @@ STR_2_CUBE = {
 }
 
 SUNE = Cube(R + U - R + U + R + U*2 -R)
-print(edge_swap('U') + edge_swap('V') + edge_swap('W') + edge_swap('X'))
-print(Cube(PLL['Y'] - PLL['Y']).solved())
+# print(edge_swap('U') + edge_swap('V') + edge_swap('W') + edge_swap('X'))
+# print(Cube(PLL['Y'] - PLL['Y']).solved())
+
+# Print edge targets
+# for k,v in BE.items():
+#     print(k)
+#     v.print_target()
+#     print('---')
 
 def gen_scramble() -> str:
     DIRECTIONS = ["U", "R", "L", "D", "F", "B"]
@@ -236,11 +267,18 @@ def run_scramble(cube: Cube, scramble: str) -> list:
 
 
 def main():
+    global I
+    I += X * 2 - Y
     cube = I
     scramble = gen_scramble()
     cube = run_scramble(cube, scramble)
     print(cube)
     print("Scramble: " + scramble)
+    edges = input().upper().strip()
+    print(f'Len: {len(edges)}')
+    for l in edges:
+        cube += edge_swap(l)
+    print(cube)
 
 
 if __name__ == '__main__':
