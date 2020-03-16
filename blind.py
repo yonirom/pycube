@@ -184,7 +184,7 @@ BE = {
         'F': Cube(-d + L),
         'G': Cube(-L -d + L),
         'H': Cube(d - L),
-        'I': Cube(l + D + L * 2),
+        'I': Cube(l - D + L * 2),
         'J': Cube(d * 2 + L),
         'K': Cube(-D - L -d + L),
         'L': Cube(-L),
@@ -270,7 +270,10 @@ def main():
     global I
     I += X * 2 - Y
     cube = I
-    scramble = gen_scramble()
+    if  len(sys.argv) < 2:
+        scramble = gen_scramble()
+    else:
+        scramble = sys.argv[1]
     # scramble = "D' F L F' U' F2 L R2 B' F U' B F D2 U2 R L2 B' F D"
     cube = run_scramble(cube, scramble)
     print(cube)
