@@ -118,11 +118,11 @@ class Cube():
     def __repr__(self):
         return str(self.transform)
 
-    # def print_target(self):
-    #     c = self.transform
-    #     def f(i):
-    #         return self.COLORS[i] + "\u2588\u2588"  #f'{i:2d}'#
-    #     print(f'{f(c[3])}\n{f(c[28])}\x1b[0m')
+    def print_target(self):
+        c = self.transform
+        def f(i):
+            return self.COLORS[i] + "\u2588\u2588"  #f'{i:2d}'#
+        print(f'{f(c[3])}\n{f(c[28])}\x1b[0m')
 
     def __str__(self):
         c = self.transform
@@ -184,9 +184,9 @@ BE = {
         'F': Cube(-d + L),
         'G': Cube(-L -d + L),
         'H': Cube(d - L),
-        'I': Cube(l - D + L * 2),
         'J': Cube(d * 2 + L),
-        'K': Cube(-D - L -d + L),
+        'I': Cube(l + D + L * 2),
+        'K': Cube(l + D + L * 2),
         'L': Cube(-L),
         'N': Cube(d + L),
         'O': Cube(D * 2 - L - d + L),
@@ -201,15 +201,45 @@ BE = {
         'X': Cube(L * 2),
 }
 
-def edge_swap(letter):
-    return Cube(BE[letter] + PLL['T'] - BE[letter])
+BC = {
+        'B': Cube(R -D),
+        'C': Cube(F),
+        'D': Cube(F - R),
+        'F': Cube(F * 2),
+        'G': Cube(F * 2 - R),
+        'H': Cube(D * 2),
+        'I': Cube(-F + D),
+        'J': Cube(R * 2 - D),
+        'K': Cube(R + F),
+        'L': Cube(D),
+        'M': Cube(-R),
+        'N': Cube(R * 2),
+        'O': Cube(R),
+        'P': Cube(I),
+        'Q': Cube(-R + F),
+        'S': Cube(-D + R),
+        'T': Cube(R * 2 + F * 2 + D),
+        'U': Cube(-F),
+        'V': Cube(-R - D),
+        'W': Cube(R * 2 + F),
+        'X': Cube(D - F)
+}
 
+BLINDY = Cube(R - U - R - U + R + U - R - F + R + U - R - U - R + F + R)
 PLL = {
     'T': Cube(R + U - R - U - R + F + R * 2 - U - R - U + R + U - R - F),
     'Ja': Cube(X + R * 2 + F + R - F + R + U * 2 - r + U + r + U * 2 - X),
     'Jb': Cube(R + U - R - F + R + U - R - U - R + F + R * 2 - U - R - U),
-    'Y': Cube(F + R - U - R - U + R + U - R - F + R + U - R - U - R + F + R - F),
+    'Ra': Cube(R - U - R - U + R + U + R + D - R - U + R - D - R + U * 2 - R - U),
+    'Y': Cube(F + BLINDY - F),
 }
+
+def edge_swap(letter):
+    return Cube(BE[letter] + PLL['T'] - BE[letter])
+
+def corner_swap(letter):
+    return Cube(BC[letter] + BLINDY - BC[letter])
+
 
 STR_2_CUBE = {
         'U': U,
@@ -239,7 +269,7 @@ SUNE = Cube(R + U - R + U + R + U*2 -R)
 # Print edge targets
 # for k,v in BE.items():
 #     print(k)
-#     v.print_target()
+#     (I + X * 2 - Y + v).print_target()
 #     print('---')
 
 def gen_scramble() -> str:
@@ -280,9 +310,18 @@ def main():
     print("Scramble: " + scramble)
     edges = input().upper().strip()
     print(f'Len: {len(edges)}')
+    swap_corners = False
     for l in edges:
-        cube += edge_swap(l)
-        print(l)
+        if l == '-':
+            swap_corners = True
+            if len(edges.split('-')[0]) % 2:  # odd number of edges
+                cube += PLL['Ra']  # Parity
+            continue
+        try:
+            cube += corner_swap(l) if swap_corners else edge_swap(l)
+        except KeyError:
+            pass
+        print(l + ' ' + ('Corner' if swap_corners else 'Edge'))
         print(cube)
     print(cube)
 
