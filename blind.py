@@ -185,7 +185,7 @@ BE = {
         'G': Cube(-L -d + L),
         'H': Cube(d - L),
         'J': Cube(d * 2 + L),
-        'I': Cube(l + D + L * 2),
+        'I': Cube(l - D + L * 2),
         'K': Cube(l + D + L * 2),
         'L': Cube(-L),
         'N': Cube(d + L),
